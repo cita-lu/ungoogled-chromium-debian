@@ -12,7 +12,7 @@ author: Michael Gilbert <mgilbert@debian.org>
  
    # This argument is to control whether enabling text section splitting in the
    # final binary. When enabled, the separated text sections with prefix
-@@ -718,7 +718,7 @@ config("compiler") {
+@@ -717,7 +717,7 @@ config("compiler") {
    # present. On Android this increases binary size due to more thinks for long
    # jumps. Turn it off by default and enable selectively for targets where it's
    # beneficial.
@@ -21,7 +21,7 @@ author: Michael Gilbert <mgilbert@debian.org>
      if (is_win) {
        ldflags += [ "/call-graph-profile-sort:no" ]
      } else if (!is_apple) {
-@@ -1530,29 +1530,9 @@ config("default_warnings") {
+@@ -1585,29 +1585,9 @@ config("default_warnings") {
          # Flags NaCl (Clang 3.7) and Xcode 9.2 (Clang clang-900.0.39.2) do not
          # recognize.
          cflags += [
@@ -51,7 +51,7 @@ author: Michael Gilbert <mgilbert@debian.org>
          ]
  
          cflags_c += [
-@@ -1560,12 +1540,6 @@ config("default_warnings") {
+@@ -1615,12 +1595,6 @@ config("default_warnings") {
            "-Wno-implicit-fallthrough",
          ]
  
@@ -64,7 +64,7 @@ author: Michael Gilbert <mgilbert@debian.org>
        }
      }
    }
-@@ -1696,7 +1670,7 @@ config("no_chromium_code") {
+@@ -1751,7 +1725,7 @@ config("no_chromium_code") {
        # suppressing them individually, we just blanket suppress them here.
        "-Wno-unused-variable",
      ]
@@ -75,13 +75,12 @@ author: Michael Gilbert <mgilbert@debian.org>
          "-Wno-misleading-indentation",
 --- a/third_party/blink/renderer/BUILD.gn
 +++ b/third_party/blink/renderer/BUILD.gn
-@@ -46,15 +46,7 @@ config("inside_blink") {
+@@ -46,14 +46,7 @@ config("inside_blink") {
        "-Wconversion",
        "-Wno-float-conversion",
        "-Wno-sign-conversion",
 -      "-Wno-implicit-float-conversion",
 -      "-Wno-implicit-int-conversion",
--      "-Wno-shorten-64-to-32",
      ]
 -
 -    if (!is_chromeos_ash ||
@@ -93,7 +92,7 @@ author: Michael Gilbert <mgilbert@debian.org>
  
 --- a/third_party/angle/BUILD.gn
 +++ b/third_party/angle/BUILD.gn
-@@ -172,7 +172,6 @@ config("extra_warnings") {
+@@ -178,7 +178,6 @@ config("extra_warnings") {
      cflags += [
        "-Wbad-function-cast",
        "-Wconditional-uninitialized",
@@ -101,7 +100,7 @@ author: Michael Gilbert <mgilbert@debian.org>
        "-Wfloat-conversion",
        "-Winconsistent-missing-destructor-override",
        "-Wmissing-field-initializers",
-@@ -194,14 +193,6 @@ config("extra_warnings") {
+@@ -200,14 +199,6 @@ config("extra_warnings") {
        "-Wunreachable-code",
        "-Wshorten-64-to-32",
      ]

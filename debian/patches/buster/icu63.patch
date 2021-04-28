@@ -29,7 +29,7 @@
  }
 --- a/chrome/browser/web_applications/BUILD.gn
 +++ b/chrome/browser/web_applications/BUILD.gn
-@@ -353,7 +353,6 @@
+@@ -347,7 +347,6 @@
      ":web_applications_unit_tests",
      "//chrome/browser/web_applications/components:unit_tests",
      "//chrome/browser/web_applications/extensions:unit_tests",
@@ -901,7 +901,7 @@
  Maybe<JSDateTimeFormat::HourCycle> GetHourCycle(Isolate* isolate,
                                                  Handle<JSReceiver> options,
                                                  const char* method) {
-@@ -1582,8 +1567,9 @@
+@@ -1588,8 +1573,9 @@
        generator_cache.Pointer()->CreateGenerator(icu_locale));
  
    // 15.Let hcDefault be dataLocaleData.[[hourCycle]].
@@ -912,7 +912,7 @@
  
    // 16.Let hc be r.[[hc]].
    HourCycle hc = HourCycle::kUndefined;
-@@ -2089,55 +2075,12 @@
+@@ -2095,55 +2081,12 @@
  // A helper function to convert the FormattedDateInterval to a
  // MaybeHandle<JSArray> for the implementation of formatRangeToParts.
  MaybeHandle<JSArray> FormattedDateIntervalToJSArray(
@@ -971,7 +971,7 @@
  
    JSObject::ValidateElements(*array);
    return array;
-@@ -2148,7 +2091,7 @@
+@@ -2154,7 +2097,7 @@
  MaybeHandle<T> FormatRangeCommon(
      Isolate* isolate, Handle<JSDateTimeFormat> date_time_format, double x,
      double y,
@@ -980,7 +980,7 @@
    // Track newer feature formateRange and formatRangeToParts
    isolate->CountUsage(v8::Isolate::UseCounterFeature::kDateTimeFormatRange);
  
-@@ -2183,15 +2126,11 @@
+@@ -2189,15 +2132,11 @@
    std::unique_ptr<icu::Calendar> c2(calendar->clone());
    c1->setTime(x, status);
    c2->setTime(y, status);
@@ -998,7 +998,7 @@
  }
  
  }  // namespace
-@@ -2200,7 +2139,7 @@
+@@ -2206,7 +2145,7 @@
      Isolate* isolate, Handle<JSDateTimeFormat> date_time_format, double x,
      double y) {
    return FormatRangeCommon<String>(isolate, date_time_format, x, y,
@@ -1425,6 +1425,77 @@
      THROW_NEW_ERROR(isolate,
                      NewRangeError(MessageTemplate::kLocaleBadParameters),
                      JSLocale);
+@@ -392,62 +395,22 @@
+ 
+ MaybeHandle<JSLocale> JSLocale::Maximize(Isolate* isolate,
+                                          Handle<JSLocale> locale) {
+-  // ICU has limitation on the length of the locale while addLikelySubtags
+-  // is called. Work around the issue by only perform addLikelySubtags
+-  // on the base locale and merge the extension if needed.
+-  icu::Locale source(*(locale->icu_locale().raw()));
+-  icu::Locale result = icu::Locale::createFromName(source.getBaseName());
++  icu::Locale icu_locale(*(locale->icu_locale().raw()));
+   UErrorCode status = U_ZERO_ERROR;
+-  result.addLikelySubtags(status);
+-  if (strlen(source.getBaseName()) != strlen(result.getBaseName())) {
+-    // Base name is changed
+-    if (strlen(source.getBaseName()) != strlen(source.getName())) {
+-      // the source has extensions, get the extensions from the source.
+-      result = icu::LocaleBuilder()
+-                   .setLocale(source)
+-                   .setLanguage(result.getLanguage())
+-                   .setRegion(result.getCountry())
+-                   .setScript(result.getScript())
+-                   .setVariant(result.getVariant())
+-                   .build(status);
+-    }
+-  } else {
+-    // Base name is not changed
+-    result = source;
+-  }
++  icu_locale.addLikelySubtags(status);
+   DCHECK(U_SUCCESS(status));
+-  DCHECK(!result.isBogus());
+-  return Construct(isolate, result);
++  DCHECK(!icu_locale.isBogus());
++  return Construct(isolate, icu_locale);
+ }
+ 
+ MaybeHandle<JSLocale> JSLocale::Minimize(Isolate* isolate,
+                                          Handle<JSLocale> locale) {
+-  // ICU has limitation on the length of the locale while minimizeSubtags
+-  // is called. Work around the issue by only perform addLikelySubtags
+-  // on the base locale and merge the extension if needed.
+-  icu::Locale source(*(locale->icu_locale().raw()));
+-  icu::Locale result = icu::Locale::createFromName(source.getBaseName());
++  icu::Locale icu_locale(*(locale->icu_locale().raw()));
+   UErrorCode status = U_ZERO_ERROR;
+-  result.minimizeSubtags(status);
+-  if (strlen(source.getBaseName()) != strlen(result.getBaseName())) {
+-    // Base name is changed
+-    if (strlen(source.getBaseName()) != strlen(source.getName())) {
+-      // the source has extensions, get the extensions from the source.
+-      result = icu::LocaleBuilder()
+-                   .setLocale(source)
+-                   .setLanguage(result.getLanguage())
+-                   .setRegion(result.getCountry())
+-                   .setScript(result.getScript())
+-                   .setVariant(result.getVariant())
+-                   .build(status);
+-    }
+-  } else {
+-    // Base name is not changed
+-    result = source;
+-  }
++  icu_locale.minimizeSubtags(status);
+   DCHECK(U_SUCCESS(status));
+-  DCHECK(!result.isBogus());
+-  return Construct(isolate, result);
++  DCHECK(!icu_locale.isBogus());
++  return Construct(isolate, icu_locale);
+ }
+ 
+ Handle<Object> JSLocale::Language(Isolate* isolate, Handle<JSLocale> locale) {
 --- a/v8/src/objects/js-locale.h
 +++ b/v8/src/objects/js-locale.h
 @@ -25,6 +25,9 @@
