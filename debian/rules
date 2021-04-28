@@ -55,16 +55,16 @@ defines+=custom_toolchain=\"//build/toolchain/linux/unbundle:default\"
 # set the appropriate cpu architecture
 DEB_HOST_ARCH ?= $(shell dpkg-architecture -qDEB_HOST_ARCH)
 ifeq (i386,$(DEB_HOST_ARCH))
-defines+=host_cpu=\"x86\" use_vaapi=true
+defines+=host_cpu=\"x86\"
 endif
 ifeq (amd64,$(DEB_HOST_ARCH))
-defines+=host_cpu=\"x64\" use_vaapi=true
+defines+=host_cpu=\"x64\"
 endif
 ifeq (arm64,$(DEB_HOST_ARCH))
-defines+=host_cpu=\"arm64\" use_vaapi=true
+defines+=host_cpu=\"arm64\"
 endif
 ifeq (armhf,$(DEB_HOST_ARCH))
-defines+=host_cpu=\"arm\" use_vaapi=false arm_use_neon=false symbol_level=0
+defines+=host_cpu=\"arm\" arm_use_neon=false symbol_level=0
 endif
 
 # add gn flags from ungoogled-chromium
@@ -75,6 +75,7 @@ defines+=is_debug=false \
          use_goma=false \
          use_ozone=false \
          use_sysroot=false \
+         use_vaapi=false \
          use_allocator=\"tcmalloc\" \
          use_libjpeg_turbo=true \
          use_custom_libcxx=false \

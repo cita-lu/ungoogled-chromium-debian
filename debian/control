@@ -90,7 +90,6 @@ Build-Depends:
  libcups2-dev (>= 1.5.0),
  libevent-dev (>= 1.4.13),
  libgcrypt20-dev,
- libva-dev,
  fonts-ipafont-gothic,
  fonts-ipafont-mincho,
 
@@ -197,7 +196,6 @@ Depends:
 Recommends:
  upower,
  libu2f-udev,
- libva1,
  libgl1-mesa-dri,
  ungoogled-chromium-sandbox,
  fonts-liberation,
