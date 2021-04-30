@@ -1,9 +1,20 @@
 description: disable flags that are introduced after clang 7
 author: Michael Gilbert <mgilbert@debian.org>
 
+--- a/base/BUILD.gn
++++ b/base/BUILD.gn
+@@ -135,7 +135,7 @@
+ }
+ 
+ config("memory_tagging") {
+-  if (current_cpu == "arm64" &&
++  if (false &&
+       (is_linux || is_chromeos || is_android || is_fuchsia)) {
+     # base/ has access to the MTE intrinsics because it needs to use them,
+     # but they're not backwards compatible. Use base::CPU::has_mte()
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -132,7 +132,7 @@ declare_args() {
+@@ -132,7 +132,7 @@
    #
    # TODO(crbug.com/977230): Enabling this when 'use_xcode_clang' is true may
    # call an old clang that doesn't support auto-init.
@@ -12,7 +23,7 @@ author: Michael Gilbert <mgilbert@debian.org>
  
    # This argument is to control whether enabling text section splitting in the
    # final binary. When enabled, the separated text sections with prefix
-@@ -717,7 +717,7 @@ config("compiler") {
+@@ -717,7 +717,7 @@
    # present. On Android this increases binary size due to more thinks for long
    # jumps. Turn it off by default and enable selectively for targets where it's
    # beneficial.
@@ -21,7 +32,7 @@ author: Michael Gilbert <mgilbert@debian.org>
      if (is_win) {
        ldflags += [ "/call-graph-profile-sort:no" ]
      } else if (!is_apple) {
-@@ -1585,29 +1585,9 @@ config("default_warnings") {
+@@ -1585,29 +1585,9 @@
          # Flags NaCl (Clang 3.7) and Xcode 9.2 (Clang clang-900.0.39.2) do not
          # recognize.
          cflags += [
@@ -51,7 +62,7 @@ author: Michael Gilbert <mgilbert@debian.org>
          ]
  
          cflags_c += [
-@@ -1615,12 +1595,6 @@ config("default_warnings") {
+@@ -1615,12 +1595,6 @@
            "-Wno-implicit-fallthrough",
          ]
  
@@ -64,7 +75,7 @@ author: Michael Gilbert <mgilbert@debian.org>
        }
      }
    }
-@@ -1751,7 +1725,7 @@ config("no_chromium_code") {
+@@ -1751,7 +1725,7 @@
        # suppressing them individually, we just blanket suppress them here.
        "-Wno-unused-variable",
      ]
@@ -73,26 +84,9 @@ author: Michael Gilbert <mgilbert@debian.org>
        cflags += [
          # TODO(https://crbug.com/1031169): Clean up and enable.
          "-Wno-misleading-indentation",
---- a/third_party/blink/renderer/BUILD.gn
-+++ b/third_party/blink/renderer/BUILD.gn
-@@ -46,14 +46,7 @@ config("inside_blink") {
-       "-Wconversion",
-       "-Wno-float-conversion",
-       "-Wno-sign-conversion",
--      "-Wno-implicit-float-conversion",
--      "-Wno-implicit-int-conversion",
-     ]
--
--    if (!is_chromeos_ash ||
--        default_toolchain != "//build/toolchain/cros:target") {
--      cflags += [ "-Wno-enum-float-conversion" ]
--    }
-   }
- }
- 
 --- a/third_party/angle/BUILD.gn
 +++ b/third_party/angle/BUILD.gn
-@@ -178,7 +178,6 @@ config("extra_warnings") {
+@@ -178,7 +178,6 @@
      cflags += [
        "-Wbad-function-cast",
        "-Wconditional-uninitialized",
@@ -100,7 +94,7 @@ author: Michael Gilbert <mgilbert@debian.org>
        "-Wfloat-conversion",
        "-Winconsistent-missing-destructor-override",
        "-Wmissing-field-initializers",
-@@ -200,14 +199,6 @@ config("extra_warnings") {
+@@ -200,14 +199,6 @@
        "-Wunreachable-code",
        "-Wshorten-64-to-32",
      ]
@@ -117,7 +111,7 @@ author: Michael Gilbert <mgilbert@debian.org>
    if (angle_is_winuwp) {
 --- a/third_party/angle/src/compiler/preprocessor/preprocessor.l
 +++ b/third_party/angle/src/compiler/preprocessor/preprocessor.l
-@@ -50,7 +50,6 @@ IF YOU MODIFY THIS FILE YOU ALSO NEED TO
+@@ -50,7 +50,6 @@
  #pragma clang diagnostic ignored "-Wunknown-warning-option"
  #endif
  // Flex isn't semi-colon clean.
@@ -125,19 +119,9 @@ author: Michael Gilbert <mgilbert@debian.org>
  #pragma clang diagnostic ignored "-Wunreachable-code"
  #endif
  
---- a/third_party/angle/src/compiler/translator/glslang.l
-+++ b/third_party/angle/src/compiler/translator/glslang.l
-@@ -46,7 +46,6 @@ WHICH GENERATES THE GLSL ES LEXER (glsla
- #pragma clang diagnostic ignored "-Wunknown-warning-option"
- #endif
- // Flex isn't semi-colon clean.
--#pragma clang diagnostic ignored "-Wextra-semi-stmt"
- #pragma clang diagnostic ignored "-Wunreachable-code"
- #endif
- }
 --- a/third_party/angle/src/compiler/preprocessor/preprocessor_lex_autogen.cpp
 +++ b/third_party/angle/src/compiler/preprocessor/preprocessor_lex_autogen.cpp
-@@ -708,7 +708,6 @@ IF YOU MODIFY THIS FILE YOU ALSO NEED TO
+@@ -708,7 +708,6 @@
  #        pragma clang diagnostic ignored "-Wunknown-warning-option"
  #    endif
  // Flex isn't semi-colon clean.
@@ -145,6 +129,16 @@ author: Michael Gilbert <mgilbert@debian.org>
  #    pragma clang diagnostic ignored "-Wunreachable-code"
  #endif
  
+--- a/third_party/angle/src/compiler/translator/glslang.l
++++ b/third_party/angle/src/compiler/translator/glslang.l
+@@ -46,7 +46,6 @@
+ #pragma clang diagnostic ignored "-Wunknown-warning-option"
+ #endif
+ // Flex isn't semi-colon clean.
+-#pragma clang diagnostic ignored "-Wextra-semi-stmt"
+ #pragma clang diagnostic ignored "-Wunreachable-code"
+ #endif
+ }
 --- a/third_party/angle/src/compiler/translator/glslang_lex_autogen.cpp
 +++ b/third_party/angle/src/compiler/translator/glslang_lex_autogen.cpp
 @@ -31,7 +31,6 @@
@@ -154,4 +148,21 @@ author: Michael Gilbert <mgilbert@debian.org>
 -#    pragma clang diagnostic ignored "-Wextra-semi-stmt"
  #    pragma clang diagnostic ignored "-Wunreachable-code"
  #endif
+ 
+--- a/third_party/blink/renderer/BUILD.gn
++++ b/third_party/blink/renderer/BUILD.gn
+@@ -46,14 +46,7 @@
+       "-Wconversion",
+       "-Wno-float-conversion",
+       "-Wno-sign-conversion",
+-      "-Wno-implicit-float-conversion",
+-      "-Wno-implicit-int-conversion",
+     ]
+-
+-    if (!is_chromeos_ash ||
+-        default_toolchain != "//build/toolchain/cros:target") {
+-      cflags += [ "-Wno-enum-float-conversion" ]
+-    }
+   }
+ }
  
