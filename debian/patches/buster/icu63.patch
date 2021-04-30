@@ -1046,6 +1046,14 @@
  UDisplayContext ToUDisplayContext(JSDisplayNames::Style style) {
    switch (style) {
      case JSDisplayNames::Style::kLong:
+@@ -132,7 +118,6 @@
+     icu::Locale l =
+         icu::Locale(icu::Locale::forLanguageTag(code, status).getBaseName());
+     // 1.c Set code to CanonicalizeUnicodeLocaleId(code).
+-    l.canonicalize(status);
+     std::string checked = l.toLanguageTag<std::string>(status);
+ 
+     if (U_FAILURE(status)) {
 --- a/v8/src/objects/js-list-format.cc
 +++ b/v8/src/objects/js-list-format.cc
 @@ -30,26 +30,46 @@
