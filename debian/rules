@@ -9,6 +9,9 @@ export DEB_BUILD_MAINT_OPTIONS=hardening=+all
 # disable unsupported flag in clang 7
 export DEB_BUILD_MAINT_OPTIONS+=reproducible=-fixfilepath
 
+# disable LTO; first introduced in Ubuntu 21.04
+export DEB_BUILD_MAINT_OPTIONS+=optimize=-lto
+
 # indicate that binary targets do not require root
 export DEB_RULES_REQUIRES_ROOT=no
 
