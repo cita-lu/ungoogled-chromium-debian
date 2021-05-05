@@ -1,0 +1,55 @@
+--- a/build/config/compiler/BUILD.gn
++++ b/build/config/compiler/BUILD.gn
+@@ -368,7 +368,7 @@
+       # links.
+       ldflags += [ "-Wl,--build-id=sha1" ]
+     } else if (current_os != "aix") {
+-      ldflags += [ "-Wl,--build-id" ]
++      ldflags += [ "-Wl,--build-id=sha1" ]
+     }
+ 
+     if (!is_android) {
+--- a/third_party/angle/BUILD.gn
++++ b/third_party/angle/BUILD.gn
+@@ -221,7 +221,7 @@
+ # to the associated library. The build-id makes it possible for a debugger to
+ # find the right symbol file to use.
+ config("build_id_config") {
+-  ldflags = [ "-Wl,--build-id" ]
++  ldflags = [ "-Wl,--build-id=sha1" ]
+ }
+ 
+ _use_copy_compiler_dll = angle_has_build && is_win && target_cpu != "arm64"
+--- a/third_party/grpc/src/third_party/upb/CMakeLists.txt
++++ b/third_party/grpc/src/third_party/upb/CMakeLists.txt
+@@ -55,7 +55,7 @@
+ if(APPLE)
+   set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -undefined dynamic_lookup -flat_namespace")
+ elseif(UNIX)
+-  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--build-id")
++  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--build-id=sha1")
+ endif()
+ 
+ enable_testing()
+--- a/third_party/grpc/src/third_party/upb/tools/make_cmakelists.py
++++ b/third_party/grpc/src/third_party/upb/tools/make_cmakelists.py
+@@ -246,7 +246,7 @@
+     if(APPLE)
+       set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -undefined dynamic_lookup -flat_namespace")
+     elseif(UNIX)
+-      set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--build-id")
++      set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--build-id=sha1")
+     endif()
+ 
+     enable_testing()
+--- a/third_party/perfetto/gn/standalone/BUILD.gn
++++ b/third_party/perfetto/gn/standalone/BUILD.gn
+@@ -147,7 +147,7 @@
+   libs = []
+ 
+   if ((is_android || is_linux) && !is_wasm) {
+-    ldflags += [ "-Wl,--build-id" ]
++    ldflags += [ "-Wl,--build-id=sha1" ]
+   }
+ 
+   if (is_clang || !is_win) {  # Clang or GCC, but not MSVC.
