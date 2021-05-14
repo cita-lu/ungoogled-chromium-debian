@@ -77,3 +77,4 @@ ungoogled-chromium/safebrowsing.patch
 ungoogled-chromium/explicit-python.patch
 ungoogled-chromium/icu67.patch
 ungoogled-chromium/build-id.patch
+ungoogled-chromium/glibc-2.33.patch
