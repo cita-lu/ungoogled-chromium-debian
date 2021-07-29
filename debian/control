@@ -1,7 +1,7 @@
 Source: ungoogled-chromium
 Section: web
 Priority: optional
-Maintainer: ungoogled-chromium Maintainers <github@null.invalid>
+Maintainer: Adam Cecile <acecile@letz-it.lu
 Vcs-Git: https://github.com/Eloston/ungoogled-chromium.git
 Vcs-Browser: https://github.com/Eloston/ungoogled-chromium
 Homepage: https://github.com/Eloston/ungoogled-chromium
