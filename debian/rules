@@ -1,5 +1,7 @@
 #!/usr/bin/make -f
 
+include /usr/share/dpkg/pkg-info.mk
+
 # enable verbose build messages
 export DH_VERBOSE=1
 
@@ -106,6 +108,7 @@ defines+=use_gio=true \
          use_cups=true \
          use_kerberos=false \
          use_lld=true \
+         rtc_use_h264=true \
 
 # handle parallel build options
 njobs=1
@@ -126,6 +129,14 @@ out/Release/gn:
 override_dh_auto_configure:
 	# output compiler information
 	$(CXX) --version
+	# Re-introduce Cisco OpenH264 source code
+	# Also make sure to add it to keepers in ./debian/scripts/unbundle
+	# And don't forget include /usr/share/dpkg/pkg-info.mk on top
+	wget -qO- 'https://commondatastorage.googleapis.com/chromium-browser-official/chromium-$(DEB_VERSION_UPSTREAM).tar.xz' \
+	 | tar xvJ --directory '$(CURDIR)/third_party/' \
+	           --strip-components=2 \
+	           --wildcards \
+	           '*/third_party/openh264/'
 	# prefer unbundled (system) libraries
 	./debian/scripts/unbundle
 	# clean polymer files manually (debian/clean doesn't work on directories)
