@@ -2,7 +2,7 @@
 
 This repository contains files to build Debian packages of [ungoogled-chromium](//github.com/Eloston/ungoogled-chromium).
 
-This branch contains the code to build packages for: **Debian unstable (sid)**. Since Debian unstable is a moving target (i.e. it never stabilizes), this branch is not guaranteed to be stable.
+This branch contains the code to build packages for: **Debian Bullseye**.
 
 ## Downloads
 
@@ -11,7 +11,7 @@ This branch contains the code to build packages for: **Debian unstable (sid)**. 
 - [OBS Production Project](//build.opensuse.org/project/show/home:ungoogled_chromium)
 - [OBS Development Project](//build.opensuse.org/project/show/home:ungoogled_chromium:testing)
 
-**Source Code**: Use the tags labeled with `sid` via `git checkout` (see building instructions). The branches are for development and may not be stable.
+**Source Code**: Use the tags labeled with `bullseye` via `git checkout` (see building instructions). The branches are for development and may not be stable.
 
 ## Installing
 
